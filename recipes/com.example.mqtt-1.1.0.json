@@ -1,0 +1,47 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "com.example.mqtt",
+    "ComponentVersion": "1.1.0",
+    "ComponentDescription": "Communications to IoT core",
+    "ComponentPublisher": "Oleks",
+    "ComponentConfiguration": {
+      "DefaultConfiguration": {
+        "message": "hello",
+        "accessControl": {
+          "aws.greengrass.ipc.mqttproxy": {
+            "com.example.mqtt:mqttproxy:1": {
+              "policyDescription": "Allows access to pub/sub to mqtt.",
+              "operations": [
+                "aws.greengrass#SubscribeToIoTCore",
+                "aws.greengrass#PublishToIoTCore"
+              ],
+              "resources": ["*"]
+            }
+          }
+        }
+      }
+    },
+    "Manifests": [
+      {
+        "Platform": {
+          "os": "linux"
+        },
+        "Lifecycle": {
+          "Install": {
+            "RequiresPrivilege": true,
+            "script": "python3 -m pip install --user awsiotsdk"
+          },
+          "Run": {
+            "RequiresPrivilege": true,
+            "script": "python3 -u {artifacts:path}/mqtt.py '{configuration:/message}'"
+          }
+        },
+        "Artifacts": [
+          {
+            "URI": "s3://oleks-greengrass-bucket/com.example.mqtt/1.1.0/mqtt.py",
+            "Unarchive": "NONE"
+          }
+        ]
+      }
+    ]
+}
